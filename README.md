@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🍽️ Sujata Dining — Restaurant Website
 
 **Pure Vegetarian · Maharashtrian · Gujarati · Punjabi Cuisine**
@@ -133,3 +134,6 @@ http://localhost:5000
 ---
 
 © 2025 Sujata Dining, Nagpur. All Rights Reserved.
+=======
+# sujata-dining
+>>>>>>> a87810fd15f5bdc36634091874e0f56d05ecde66
