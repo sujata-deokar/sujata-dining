@@ -1,0 +1,82 @@
+// ============================================================
+//  SUJATA DINING — server.js
+//  Backend: Node.js + Express.js
+//  Run: node server.js
+// ============================================================
+
+const express    = require('express');
+const mongoose   = require('mongoose');
+const cors       = require('cors');
+const bodyParser = require('body-parser');
+const path       = require('path');
+
+const app  = express();
+const PORT = process.env.PORT || 5000;
+
+/* ============================================================
+   MIDDLEWARE
+   ============================================================ */
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname)));
+
+/* ============================================================
+   MONGODB CONNECTION
+   ============================================================ */
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/sujata_dining';
+
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser:    true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('✅ MongoDB connected successfully'))
+.catch(err => console.error('❌ MongoDB connection error:', err));
+
+/* ============================================================
+   IMPORT ROUTES
+   ============================================================ */
+const menuRoutes        = require('./routes/menuRoutes');
+const reservationRoutes = require('./routes/reservationRoutes');
+const orderRoutes       = require('./routes/orderRoutes');
+
+app.use('/api/menu',         menuRoutes);
+app.use('/api/reservations', reservationRoutes);
+app.use('/api/orders',       orderRoutes);
+
+/* ============================================================
+   ROOT ROUTE
+   ============================================================ */
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+/* ============================================================
+   HEALTH CHECK
+   ============================================================ */
+app.get('/api/health', (req, res) => {
+  res.json({
+    status:    'OK',
+    message:   '🍽️ Sujata Dining API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/* ============================================================
+   GLOBAL ERROR HANDLER
+   ============================================================ */
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.message);
+  res.status(500).json({ success: false, error: 'Internal Server Error' });
+});
+
+/* ============================================================
+   START SERVER
+   ============================================================ */
+app.listen(PORT, () => {
+  console.log(`🚀 Sujata Dining server running at http://localhost:${PORT}`);
+});
+
+module.exports = app;
