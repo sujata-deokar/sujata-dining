@@ -18,8 +18,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// ✅ Serve static frontend from "public" folder
-app.use(express.static(path.join(__dirname, 'public')));
+// ✅ Serve static frontend from root folder (since no public folder)
+app.use(express.static(__dirname));
 
 /* ============================================================
    MONGODB CONNECTION
@@ -34,21 +34,19 @@ mongoose.connect(MONGO_URI, {
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
 /* ============================================================
-   ROUTES
+   ROUTES (FIXED)
    ============================================================ */
-const menuRoutes        = require('./routes/menuRoutes');
-const reservationRoutes = require('./routes/reservationRoutes');
-const orderRoutes       = require('./routes/orderRoutes');
+const routes      = require('./routes');
+const orderRoutes = require('./orderRoutes');
 
-app.use('/api/menu',         menuRoutes);
-app.use('/api/reservations', reservationRoutes);
-app.use('/api/orders',       orderRoutes);
+app.use('/api', routes);
+app.use('/api/orders', orderRoutes);
 
 /* ============================================================
    ROOT ROUTE
    ============================================================ */
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 /* ============================================================
