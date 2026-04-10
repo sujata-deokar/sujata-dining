@@ -1,7 +1,5 @@
 // ============================================================
 //  SUJATA DINING — server.js
-//  Backend: Node.js + Express.js
-//  Run: node server.js
 // ============================================================
 
 const express    = require('express');
@@ -20,8 +18,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname)));
+// ✅ Serve static frontend from "public" folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 /* ============================================================
    MONGODB CONNECTION
@@ -36,7 +34,7 @@ mongoose.connect(MONGO_URI, {
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
 /* ============================================================
-   IMPORT ROUTES
+   ROUTES
    ============================================================ */
 const menuRoutes        = require('./routes/menuRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
@@ -50,7 +48,7 @@ app.use('/api/orders',       orderRoutes);
    ROOT ROUTE
    ============================================================ */
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 /* ============================================================
@@ -65,7 +63,7 @@ app.get('/api/health', (req, res) => {
 });
 
 /* ============================================================
-   GLOBAL ERROR HANDLER
+   ERROR HANDLER
    ============================================================ */
 app.use((err, req, res, next) => {
   console.error('Server Error:', err.message);
@@ -76,7 +74,7 @@ app.use((err, req, res, next) => {
    START SERVER
    ============================================================ */
 app.listen(PORT, () => {
-  console.log(`🚀 Sujata Dining server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
 
 module.exports = app;
